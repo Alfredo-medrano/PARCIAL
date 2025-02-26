@@ -1,44 +1,54 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Referencias a elementos
     const verMasBtn = document.getElementById("ver-mas");
+    const heroSection = document.getElementById("hero");
     const placesSection = document.getElementById("places");
-
-    const mostrarTarjetas = () => {
-        placesSection.classList.add("visible");
-        placesSection.classList.remove("hidden");
-        verMasBtn.classList.add("hidden");
-
-        setTimeout(() => {
-            placesSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 300);
-
-        setTimeout(() => {
-            placesSection.classList.remove("visible");
-            placesSection.classList.add("hidden");
-            setTimeout(() => {
-                verMasBtn.classList.remove("hidden");
-                verMasBtn.classList.add("visible");
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }, 800); 
-        }, 20000); 
-    };
-
+  
+    // Al hacer clic en "Ver más", ocultar hero y mostrar tarjetas + barras
     verMasBtn.addEventListener("click", () => {
-        mostrarTarjetas();
+      // Oculta Hero
+      heroSection.classList.add("hidden");
+      // Muestra Tarjetas
+      placesSection.classList.remove("hidden");
+  
+      // Inicializar barras de progreso
+      initProgressBars();
     });
-
+  
+    // Función para animar las barras de progreso
+    function initProgressBars() {
+      const progressFills = document.querySelectorAll(".progress-fill");
+      progressFills.forEach(fill => {
+        // Leer el porcentaje desde data-attribute
+        const percentage = fill.getAttribute("data-percentage");
+        // Aplicar una pequeña demora para que se vea la animación
+        setTimeout(() => {
+          fill.style.width = percentage + "%";
+        }, 300);
+      });
+    }
+  
+    // Efecto al hacer clic en las tarjetas
     const places = document.querySelectorAll(".place");
     places.forEach(place => {
-        place.addEventListener("mouseover", () => {
-            place.querySelector("h2").style.color = "#ffcc00";
-        });
-
-        place.addEventListener("mouseout", () => {
-            place.querySelector("h2").style.color = "#ffffff";
-        });
-
-        place.addEventListener("click", () => {
-            const description = place.querySelector(".description");
-            description.style.display = description.style.display === "none" ? "block" : "none";
-        });
+      place.addEventListener("click", () => {
+        // Agregar clase de resaltado
+        place.classList.add("highlight");
+  
+        // Mostrar descripción (si estaba oculta)
+        const description = place.querySelector(".description");
+        if (description) {
+          description.style.display = "block";
+        }
+  
+        // Después de 10 segundos, ocultar la descripción y quitar resaltado
+        setTimeout(() => {
+          if (description) {
+            description.style.display = "none";
+          }
+          place.classList.remove("highlight");
+        }, 10000);
+      });
     });
-});
+  });
+  
